@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS external_connectors (id uuid PRIMARY KEY, tenant_id text, name text, type text, db_type text, url text, username text, password_enc text, polling_query text, interval_sec int, mapping_json text, enabled boolean default true);
+CREATE TABLE IF NOT EXISTS connector_dead_letter (id uuid PRIMARY KEY, connector_id uuid NOT NULL, reason text, payload text, at timestamptz default now());

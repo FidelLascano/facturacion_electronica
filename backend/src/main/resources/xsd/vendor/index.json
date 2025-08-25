@@ -1,0 +1,66 @@
+{
+  "retencion": [
+    {
+      "version": "1.0.0",
+      "path": "/xsd/vendor/sri/retencion/1.0.0.xsd"
+    },
+    {
+      "version": "2.0.0",
+      "path": "/xsd/vendor/sri/retencion/2.0.0.xsd"
+    }
+  ],
+  "guiaRemision": [
+    {
+      "version": "1.0.0",
+      "path": "/xsd/vendor/sri/guiaRemision/1.0.0.xsd"
+    },
+    {
+      "version": "1.1.0",
+      "path": "/xsd/vendor/sri/guiaRemision/1.1.0.xsd"
+    }
+  ],
+  "liquidacion": [
+    {
+      "version": "1.0.0",
+      "path": "/xsd/vendor/sri/liquidacion/1.0.0.xsd"
+    },
+    {
+      "version": "1.1.0",
+      "path": "/xsd/vendor/sri/liquidacion/1.1.0.xsd"
+    }
+  ],
+  "notaDebito": [
+    {
+      "version": "1.0.0",
+      "path": "/xsd/vendor/sri/notaDebito/1.0.0.xsd"
+    }
+  ],
+  "notaCredito": [
+    {
+      "version": "1.0.0",
+      "path": "/xsd/vendor/sri/notaCredito/1.0.0.xsd"
+    },
+    {
+      "version": "1.1.0",
+      "path": "/xsd/vendor/sri/notaCredito/1.1.0.xsd"
+    }
+  ],
+  "factura": [
+    {
+      "version": "1.0.0",
+      "path": "/xsd/vendor/sri/factura/1.0.0.xsd"
+    },
+    {
+      "version": "1.1.0",
+      "path": "/xsd/vendor/sri/factura/1.1.0.xsd"
+    },
+    {
+      "version": "2.0.0",
+      "path": "/xsd/vendor/sri/factura/2.0.0.xsd"
+    },
+    {
+      "version": "2.1.0",
+      "path": "/xsd/vendor/sri/factura/2.1.0.xsd"
+    }
+  ]
+}

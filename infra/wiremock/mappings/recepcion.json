@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/recepcion"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "estado": "RECIBIDA"
+    }
+  }
+}

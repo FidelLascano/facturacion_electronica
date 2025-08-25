@@ -1,0 +1,14 @@
+
+stages: [build]
+
+backend:
+  stage: build
+  image: maven:3.9-eclipse-temurin-21
+  script:
+    - cd backend && mvn -q -DskipTests package
+
+frontend:
+  stage: build
+  image: node:20
+  script:
+    - cd frontend && npm ci || npm i && npm run build

@@ -1,0 +1,1 @@
+{"docType": "notaDebito", "template": "<notaDebito><infoNotaDebito><ruc>${ruc}</ruc><razonSocial>${razon_social}</razonSocial><razonSocialComprador>${cliente}</razonSocialComprador><valorTotal>${total}</valorTotal></infoNotaDebito></notaDebito>", "fields": {}}

@@ -1,0 +1,56 @@
+name: CI
+on:
+  push: { branches: ["**"] }
+  pull_request:
+
+jobs:
+  codeql:
+    name: CodeQL SAST
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with: { languages: 'java, javascript' }
+      - uses: github/codeql-action/analyze@v3
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Backend build
+        run: |
+          cd backend
+          mvn -q -DskipTests package
+      - name: Frontend build
+        run: |
+          cd frontend
+          npm ci || npm i
+          npm run build
+      - name: Trivy FS Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+          format: 'table'
+          exit-code: '0'
+          scan-ref: '.'
+      - name: OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@v4
+        with:
+          project: 'FacturacionEcuador'
+          path: './'
+          format: 'HTML'
+          out: 'reports'
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with: { name: security-reports, path: reports }

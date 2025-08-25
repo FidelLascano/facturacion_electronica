@@ -1,0 +1,31 @@
+
+package com.fhalcom.facturacion.service;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import java.util.Map;
+import java.util.List;
+import java.io.ByteArrayOutputStream;
+
+public class RideService {
+  private static JasperReport compile(String path){
+    try(var is = RideService.class.getResourceAsStream(path)){
+      return JasperCompileManager.compileReport(is);
+    }catch(Exception e){ throw new RuntimeException(e); }
+  }
+  private static byte[] render(String jrxml, Map<String,Object> params, List<?> items){
+    try{
+      JasperReport jr = compile(jrxml);
+      JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(items, false);
+      JasperPrint jp = JasperFillManager.fillReport(jr, new java.util.HashMap<>(params), ds);
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      JasperExportManager.exportReportToPdfStream(jp, bos);
+      return bos.toByteArray();
+    }catch(Exception e){ throw new RuntimeException(e); }
+  }
+  public static byte[] factura(Map<String,Object> p, List<?> items){ return render("/ride/ride_factura.jrxml", p, items); }
+  public static byte[] notaCredito(Map<String,Object> p, List<?> items){ return render("/ride/ride_notaCredito.jrxml", p, items); }
+  public static byte[] notaDebito(Map<String,Object> p, List<?> items){ return render("/ride/ride_notaDebito.jrxml", p, items); }
+  public static byte[] guia(Map<String,Object> p, List<?> items){ return render("/ride/ride_guiaRemision.jrxml", p, items); }
+  public static byte[] retencion(Map<String,Object> p, List<?> items){ return render("/ride/ride_retencion.jrxml", p, items); }
+  public static byte[] liquidacion(Map<String,Object> p, List<?> items){ return render("/ride/ride_liquidacion.jrxml", p, items); }
+}

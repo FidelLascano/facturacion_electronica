@@ -1,0 +1,1 @@
+{"docType": "guiaRemision", "template": "<guiaRemision><infoGuiaRemision><rucTransportista>${ruc}</rucTransportista><dirPartida>${dir_partida}</dirPartida><placa>${placa}</placa></infoGuiaRemision></guiaRemision>", "fields": {}}

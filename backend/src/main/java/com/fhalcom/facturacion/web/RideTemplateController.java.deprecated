@@ -1,0 +1,19 @@
+package com.fhalcom.facturacion.web;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import com.fhalcom.facturacion.ride.*;
+import java.util.Map;
+@RestController @RequestMapping("/ride/templates")
+public class RideTemplateController {
+  private final RideTemplateRepo repo;
+  public RideTemplateController(RideTemplateRepo r){ this.repo=r; }
+  @GetMapping(value="/{docType}", produces=MediaType.TEXT_PLAIN_VALUE)
+  public String get(@PathVariable String docType, @RequestParam String tenant){
+    return repo.findByTenantIdAndDocType(tenant, docType).map(x->x.jrxml).orElse("");
+  }
+  @PostMapping(value="/{docType}", consumes=MediaType.TEXT_PLAIN_VALUE)
+  public Map<String,Object> set(@PathVariable String docType, @RequestParam String tenant, @RequestBody String jrxml){
+    var t = repo.findByTenantIdAndDocType(tenant, docType).orElseGet(()->{ var n=new RideTemplate(); n.tenantId=tenant; n.docType=docType; return n; });
+    t.jrxml = jrxml; repo.save(t); return Map.of("ok", true);
+  }
+}

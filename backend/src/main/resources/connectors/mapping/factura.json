@@ -1,0 +1,1 @@
+{"docType": "factura", "template": "<factura Id=\"comprobante\"><infoFactura><ruc>${ruc}</ruc><razonSocial>${razon_social}</razonSocial><razonSocialComprador>${cliente}</razonSocialComprador><importeTotal>${total}</importeTotal></infoFactura></factura>", "fields": {"ruc": "ruc", "razon_social": "razon_social", "cliente": "cliente", "total": "total"}}

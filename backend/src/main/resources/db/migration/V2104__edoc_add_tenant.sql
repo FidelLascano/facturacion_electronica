@@ -1,0 +1,3 @@
+
+ALTER TABLE IF EXISTS edoc ADD COLUMN IF NOT EXISTS tenant_id VARCHAR(64);
+CREATE INDEX IF NOT EXISTS idx_edoc_tenant ON edoc(tenant_id);

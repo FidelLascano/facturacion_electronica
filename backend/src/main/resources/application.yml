@@ -1,0 +1,68 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/facturacion}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.format_sql: true
+      hibernate.jdbc.time_zone: UTC
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  cache:
+    type: ${APP_CACHE:caffeine}
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+  pattern:
+    console: '{"ts":"%d{yyyy-MM-dd''T''HH:mm:ss.SSSXXX}","level":"%5p","logger":"%logger{36}","msg":"%replace(%m){"\n","\u000A"}","mdc":%mdc}%n'
+
+app:
+  jwtSecret: ${APP_JWT_SECRET:dev-secret}
+  timezone: ${APP_TIMEZONE:America/Guayaquil}
+  ratelimit:
+    enabled: ${APP_RATELIMIT_ENABLED:true}
+    perMin: ${APP_RATELIMIT_PER_MIN:120}
+  quota:
+    docsPerDay: ${APP_QUOTA_DOCS_PER_DAY:500}
+  kmsMode: ${APP_KMS_MODE:dev}
+  sri:
+    recepcionUrl: ${APP_SRI_RECEPCION_URL:http://localhost:9999/recepcion}
+    autorizacionUrl: ${APP_SRI_AUTORIZACION_URL:http://localhost:9999/autorizacion}
+  s3:
+    endpoint: ${APP_S3_ENDPOINT:http://localhost:9000}
+    bucket: ${APP_S3_BUCKET:fe-bucket}
+    access: ${APP_S3_ACCESS:minioadmin}
+    secret: ${APP_S3_SECRET:minioadmin}
+
+redis:
+  host: ${REDIS_HOST:localhost}
+  port: ${REDIS_PORT:6379}
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    prometheus:
+      enabled: true
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://otel-collector:4318}

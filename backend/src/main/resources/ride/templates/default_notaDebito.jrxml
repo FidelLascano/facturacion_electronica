@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport name="notaDebito" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40">
+    <parameter name="TENANT" class="java.lang.String"/>
+    <parameter name="QR_IMAGE" class="java.awt.Image"/>
+    <parameter name="LOGO_IMAGE" class="java.awt.Image"/>
+    <parameter name="NUM_AUT" class="java.lang.String"/>
+    <parameter name="FEC_AUT" class="java.lang.String"/>
+    <queryString language="xPath"><![CDATA[/notaDebito]]></queryString>
+    <title>
+        <band height="140">
+            <image><reportElement x="0" y="0" width="120" height="60"/><imageExpression class="java.awt.Image"><![CDATA[$P{LOGO_IMAGE}]]></imageExpression></image>
+            <staticText><reportElement x="140" y="0" width="260" height="30"/><text><![CDATA[RIDE - Nota de Débito]]></text></staticText>
+            <textField><reportElement x="140" y="30" width="260" height="20"/><textFieldExpression><![CDATA["Tenant: " + $P{TENANT}]]></textFieldExpression></textField>
+            <image><reportElement x="420" y="0" width="120" height="120"/><imageExpression class="java.awt.Image"><![CDATA[$P{QR_IMAGE}]]></imageExpression></image>
+            <textField><reportElement x="140" y="50" width="260" height="20"/><textFieldExpression><![CDATA["Autorización: " + ($P{NUM_AUT}==null?"":$P{NUM_AUT})]]></textFieldExpression></textField>
+            <textField><reportElement x="140" y="70" width="260" height="20"/><textFieldExpression><![CDATA["Fecha Autorización: " + ($P{FEC_AUT}==null?"":$P{FEC_AUT})]]></textFieldExpression></textField>
+            <staticText><reportElement x="140" y="90" width="260" height="20"/><text><![CDATA[Firmado electrónicamente]]></text></staticText>
+        </band>
+    </title>
+    <detail>
+        <band height="140">
+            <staticText><reportElement x="0" y="0" width="500" height="20"/><text><![CDATA[Contenido del documento (Nota de Débito)]]></text></staticText>
+        </band>
+    </detail>
+</jasperReport>

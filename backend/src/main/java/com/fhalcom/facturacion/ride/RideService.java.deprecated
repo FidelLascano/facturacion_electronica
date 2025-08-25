@@ -1,0 +1,70 @@
+package com.fhalcom.facturacion.ride;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import org.w3c.dom.Document;
+import org.springframework.stereotype.Service;
+import com.fhalcom.facturacion.storage.S3Storage;
+
+@Service
+public class RideService {
+  private final RideTemplateRepo templates; private final RideBrandingRepo branding; private final S3Storage s3;
+  private final String s3KeyTpl;
+  public RideService(RideTemplateRepo t, RideBrandingRepo b, S3Storage s3, @org.springframework.beans.factory.annotation.Value("${ride.branding.s3KeyTemplate:branding/${tenant}/logo.png}") String s3KeyTpl){
+    this.templates=t; this.branding=b; this.s3=s3; this.s3KeyTpl=s3KeyTpl;
+  }
+
+  public byte[] render(Document xml, String tenant, String docType, String qrContent, String numAut, String fecAut){
+    try{
+      java.io.InputStream tpl = null;
+      var opt = templates.findByTenantIdAndDocType(tenant, docType);
+      if(opt.isPresent()) tpl = new java.io.ByteArrayInputStream(opt.get().jrxml.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      if(tpl==null){
+        String cp = "/ride/templates/"+tenant+"/"+docType+".jrxml";
+        tpl = getClass().getResourceAsStream(cp);
+      }
+      if(tpl==null){
+        String cp = "/ride/templates/default_"+docType+".jrxml";
+        tpl = getClass().getResourceAsStream(cp);
+      }
+      if(tpl==null) tpl = getClass().getResourceAsStream("/ride/templates/default_factura.jrxml");
+
+      JasperReport jr = JasperCompileManager.compileReport(tpl);
+      java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+      javax.xml.transform.Transformer t = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
+      t.transform(new javax.xml.transform.dom.DOMSource(xml), new javax.xml.transform.stream.StreamResult(out));
+      JRXmlDataSource ds = new JRXmlDataSource(new java.io.ByteArrayInputStream(out.toByteArray()), "/"+docType);
+
+      java.util.Map<String,Object> params = new java.util.HashMap<>();
+      params.put("TENANT", tenant);
+      if(numAut!=null) params.put("NUM_AUT", numAut);
+      if(fecAut!=null) params.put("FEC_AUT", fecAut);
+      if(qrContent!=null){
+        try{
+          com.google.zxing.qrcode.QRCodeWriter writer = new com.google.zxing.qrcode.QRCodeWriter();
+          com.google.zxing.common.BitMatrix bm = writer.encode(qrContent, com.google.zxing.BarcodeFormat.QR_CODE, 200, 200);
+          java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(bm.getWidth(), bm.getHeight(), java.awt.image.BufferedImage.TYPE_INT_RGB);
+          for(int x=0;x<bm.getWidth();x++) for(int y=0;y<bm.getHeight();y++) img.setRGB(x,y, bm.get(x,y)?0x000000:0xFFFFFF);
+          params.put("QR_IMAGE", img);
+        }catch(Exception ignore){}
+      }
+      // Logo
+      java.awt.Image logo = null;
+      try{
+        var b = branding.findByTenantId(tenant);
+        if(b.isPresent()) logo = javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(b.get().logo));
+      }catch(Exception ignore){}
+      if(logo==null && s3!=null){
+        String key = s3KeyTpl.replace("${tenant}", tenant);
+        try{ byte[] b = s3.getBytes(key); if(b!=null) logo = javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(b)); }catch(Exception ignore){}
+      }
+      if(logo==null){
+        var in = getClass().getResourceAsStream("/ride/templates/default_logo.png");
+        if(in!=null) logo = javax.imageio.ImageIO.read(in);
+      }
+      if(logo!=null) params.put("LOGO_IMAGE", logo);
+
+      JasperPrint jp = JasperFillManager.fillReport(jr, params, ds);
+      return JasperExportManager.exportReportToPdf(jp);
+    }catch(Exception e){ throw new RuntimeException(e); }
+  }
+}

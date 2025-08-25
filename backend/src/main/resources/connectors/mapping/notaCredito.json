@@ -1,0 +1,1 @@
+{"docType": "notaCredito", "template": "<notaCredito><infoNotaCredito><ruc>${ruc}</ruc><razonSocial>${razon_social}</razonSocial><razonSocialComprador>${cliente}</razonSocialComprador><valorModificacion>${total}</valorModificacion></infoNotaCredito></notaCredito>", "fields": {}}

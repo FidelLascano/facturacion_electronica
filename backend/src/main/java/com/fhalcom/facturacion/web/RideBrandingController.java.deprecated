@@ -1,0 +1,22 @@
+package com.fhalcom.facturacion.web;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.fhalcom.facturacion.ride.*;
+
+@RestController @RequestMapping("/ride/branding")
+public class RideBrandingController {
+  private final RideBrandingRepo repo;
+  public RideBrandingController(RideBrandingRepo r){ this.repo=r; }
+
+  @PostMapping(value="/logo", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+  public java.util.Map<String,Object> upload(@RequestParam String tenant, @RequestParam("file") MultipartFile file) throws Exception{
+    var b = repo.findByTenantId(tenant).orElseGet(()->{ var x=new RideBranding(); x.tenantId=tenant; return x; });
+    b.logo = file.getBytes(); b.contentType = file.getContentType(); repo.save(b);
+    return java.util.Map.of("ok", true, "size", b.logo.length);
+  }
+  @GetMapping(value="/logo")
+  public ResponseEntity<byte[]> logo(@RequestParam String tenant){
+    return repo.findByTenantId(tenant).map(b-> ResponseEntity.ok().contentType(MediaType.parseMediaType(b.contentType!=null?b.contentType:"image/png")).body(b.logo)).orElseGet(()->ResponseEntity.notFound().build());
+  }
+}

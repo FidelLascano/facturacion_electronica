@@ -1,0 +1,30 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: facturacion-ecuador }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: facturacion-ecuador } }
+  template:
+    metadata:
+      labels: { app: facturacion-ecuador }
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "fe-role"
+        vault.hashicorp.com/agent-inject-secret-cert-pin: "secret/data/certs/${COMPANY_ID}"
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports: [{containerPort: 8080}]
+          envFrom:
+            - configMapRef: { name: facturacion-config }
+            - secretRef: { name: facturacion-secrets }
+          readinessProbe:
+            httpGet: { path: /actuator/health, port: 8080 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /actuator/health, port: 8080 }
+            initialDelaySeconds: 30
+            periodSeconds: 30

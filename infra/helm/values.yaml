@@ -1,0 +1,10 @@
+image:
+  repository: example/facturacion-ecuador
+  tag: latest
+service:
+  port: 80
+ingress:
+  enabled: true
+  host: fe.example.com
+  tlsSecret: fe-tls
+resources: {}

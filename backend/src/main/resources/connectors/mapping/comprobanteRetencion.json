@@ -1,0 +1,1 @@
+{"docType": "comprobanteRetencion", "template": "<comprobanteRetencion><infoCompRetencion><razonSocialSujetoRetenido>${sujeto}</razonSocialSujetoRetenido><periodoFiscal>${periodo}</periodoFiscal></infoCompRetencion></comprobanteRetencion>", "fields": {}}

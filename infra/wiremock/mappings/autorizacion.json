@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/autorizacion"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "estado": "AUTORIZADO",
+      "numeroAutorizacion": "1234567890"
+    }
+  }
+}

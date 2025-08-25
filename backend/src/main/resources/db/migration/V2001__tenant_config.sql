@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS tenant_config (id uuid PRIMARY KEY, tenant_id text UNIQUE, json text);
